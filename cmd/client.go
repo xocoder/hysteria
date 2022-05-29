@@ -255,22 +255,24 @@ func client(config *clientConfig) {
 			if timeout == 0 {
 				timeout = 300 * time.Second
 			}
-			//install tun driver
-
-			wintun, err := wintun.CreateTUN(config.TUN.Name, 0)
-			if err != nil {
-				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
-			}
-			realInterfaceName, err2 := wintun.Name()
-			if err2 != nil {
-				logrus.WithField("error", err).Fatal("CreateTun failed")
-			}
-			config.TUN.Name = realInterfaceName
 
 			tunServer, err := tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
-				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+				//install tun driver
+				wintun, err := wintun.CreateTUN(config.TUN.Name, 0)
+				if err != nil {
+					logrus.WithField("error", err).Fatal("Failed to CreaterTUN")
+				}
+				realInterfaceName, err2 := wintun.Name()
+				if err2 != nil {
+					logrus.WithField("error", err).Fatal("CreateTun failed")
+				}
+				config.TUN.Name = realInterfaceName
+				tunServer, _ = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
+					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
+
 			}
 			tunServer.RequestFunc = func(addr net.Addr, reqAddr string) {
 				logrus.WithFields(logrus.Fields{
