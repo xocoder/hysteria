@@ -4,9 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
-	"github.com/oschwald/geoip2-golang"
-	"github.com/tobyxdd/hysteria/pkg/pmtud_fix"
-	"github.com/yosuke-furukawa/json5/encoding/json5"
 	"io"
 	"io/ioutil"
 	"net"
@@ -14,6 +11,10 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/oschwald/geoip2-golang"
+	"github.com/tobyxdd/hysteria/pkg/pmtud_fix"
+	"github.com/yosuke-furukawa/json5/encoding/json5"
 
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/congestion"

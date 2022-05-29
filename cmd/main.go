@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -32,6 +35,7 @@ var (
 	appDate    = "Unknown"
 )
 
+var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
 var rootCmd = &cobra.Command{
 	Use:     "hysteria",
 	Long:    fmt.Sprintf("%s%s\n\nVersion:\t%s\nBuildDate:\t%s\nCommitHash:\t%s\nAuthors:\t%s", logo, desc, appVersion, appDate, appCommit, authors),
@@ -87,6 +91,14 @@ var clientCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
+		//解密config
+		cbs, err = AesDecrypt(cbs, pwdkey)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"file":  viper.GetString("config"),
+				"error": err,
+			}).Fatal("[decrypt]Failed to parse client configuration")
+		}
 		// client mode
 		cc, err := parseClientConfig(cbs)
 		if err != nil {
@@ -111,6 +123,7 @@ var serverCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
+
 		// server mode
 		sc, err := parseServerConfig(cbs)
 		if err != nil {
@@ -178,4 +191,31 @@ func init() {
 
 func main() {
 	cobra.CheckErr(rootCmd.Execute())
+}
+
+//pkcs7UnPadding 填充的反向操作
+func pkcs7UnPadding(data []byte) ([]byte, error) {
+	length := len(data)
+	if length == 0 {
+		return nil, errors.New("密文错误！")
+	}
+	//获取填充的个数
+	unPadding := int(data[length-1])
+	return data[:(length - unPadding)], nil
+}
+
+func AesDecrypt(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	blockMode := cipher.NewCBCDecrypter(block, key[:blockSize])
+	crypted := make([]byte, len(data))
+	blockMode.CryptBlocks(crypted, data)
+	crypted, err = pkcs7UnPadding(crypted)
+	if err != nil {
+		return nil, err
+	}
+	return crypted, nil
 }
