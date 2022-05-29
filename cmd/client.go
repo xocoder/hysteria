@@ -261,15 +261,7 @@ func client(config *clientConfig) {
 			if err != nil {
 				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 				//install tun driver
-				wintun, err := wintun.CreateTUN(config.TUN.Name, 0)
-				if err != nil {
-					logrus.WithField("error", err).Fatal("Failed to CreaterTUN")
-				}
-				realInterfaceName, err2 := wintun.Name()
-				if err2 != nil {
-					logrus.WithField("error", err).Fatal("CreateTun failed")
-				}
-				config.TUN.Name = realInterfaceName
+				go createWinTun(config)
 				tunServer, _ = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 
@@ -463,4 +455,19 @@ func parseClientConfig(cb []byte) (*clientConfig, error) {
 		return nil, err
 	}
 	return &c, c.Check()
+}
+
+func createWinTun(config *clientConfig) {
+	wintun, err := wintun.CreateTUN(config.TUN.Name, 0)
+	if err != nil {
+		logrus.WithField("error", err).Fatal("Failed to CreaterTUN")
+	}
+	var buf [1024]byte
+	for {
+		_, err := wintun.Read(buf[:], 1024)
+		if err != nil {
+			logrus.WithField("error", err).Fatal("Failed to CreaterTUN1")
+		}
+		buf[0] = 0
+	}
 }
