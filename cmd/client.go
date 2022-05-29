@@ -19,6 +19,7 @@ import (
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/congestion"
 	"github.com/sirupsen/logrus"
+
 	"github.com/xocoder/hysteria/pkg/acl"
 	hyCongestion "github.com/xocoder/hysteria/pkg/congestion"
 	"github.com/xocoder/hysteria/pkg/core"
@@ -28,8 +29,8 @@ import (
 	"github.com/xocoder/hysteria/pkg/socks5"
 	"github.com/xocoder/hysteria/pkg/tproxy"
 	"github.com/xocoder/hysteria/pkg/transport"
-	"github.com/xocoder/hysteria/pkg/tun"
-	//"github.com/xocoder/hysteria/pkg/tun"
+	tun "github.com/xocoder/hysteria/pkg/tun"
+	wintun "golang.zx2c4.com/wireguard/tun"
 )
 
 func client(config *clientConfig) {
@@ -254,25 +255,22 @@ func client(config *clientConfig) {
 			if timeout == 0 {
 				timeout = 300 * time.Second
 			}
+			//install tun driver
+
+			wintun, err := wintun.CreateTUN(config.TUN.Name, 0)
+			if err != nil {
+				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+			}
+			realInterfaceName, err2 := wintun.Name()
+			if err2 != nil {
+				logrus.WithField("error", err).Fatal("CreateTun failed")
+			}
+			config.TUN.Name = realInterfaceName
+
 			tunServer, err := tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
-				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
-				//install tun driver
-				tun, err := tun.CreateTUN(config.TUN.Timeout, 0)
-				if err != nil {
-					logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
-				}
-				realInterfaceName, err2 := tun.Name()
-				if err2 != nil {
-					logrus.WithField("error", err).Fatal("CreateTun failed")
-				}
-				config.TUN.Name = realInterfaceName
-				tunServer, err = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
-					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
-				if err != nil {
-					logrus.WithField("error", err).Fatal("Failed to initialize TUN server and CreateTUN")
-				}
+				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 			}
 			tunServer.RequestFunc = func(addr net.Addr, reqAddr string) {
 				logrus.WithFields(logrus.Fields{
