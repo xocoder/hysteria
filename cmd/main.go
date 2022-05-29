@@ -35,7 +35,7 @@ var (
 	appDate    = "Unknown"
 )
 
-var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
+//var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
 var rootCmd = &cobra.Command{
 	Use:     "hysteria",
 	Long:    fmt.Sprintf("%s%s\n\nVersion:\t%s\nBuildDate:\t%s\nCommitHash:\t%s\nAuthors:\t%s", logo, desc, appVersion, appDate, appCommit, authors),
@@ -91,7 +91,7 @@ var clientCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
-		//解密config
+		/*/解密config
 		cbs, err = AesDecrypt(cbs, pwdkey)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
@@ -99,6 +99,7 @@ var clientCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("[decrypt]Failed to parse client configuration")
 		}
+		*/
 		// client mode
 		cc, err := parseClientConfig(cbs)
 		if err != nil {
