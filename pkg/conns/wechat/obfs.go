@@ -2,13 +2,14 @@ package wechat
 
 import (
 	"encoding/binary"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
 	"math/rand"
 	"net"
 	"os"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/xocoder/hysteria/pkg/obfs"
 )
 
 const udpBufferSize = 65535

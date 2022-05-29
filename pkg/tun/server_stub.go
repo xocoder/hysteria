@@ -5,7 +5,7 @@ package tun
 
 import (
 	"errors"
-	"github.com/tobyxdd/hysteria/pkg/core"
+	"github.com/xocoder/hysteria/pkg/core"
 	"io"
 	"net"
 	"time"

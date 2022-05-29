@@ -2,13 +2,13 @@
 
 [![License][1]][2] [![Release][3]][4] [![Telegram][5]][6] [![Discussions][7]][8]
 
-[1]: https://img.shields.io/github/license/tobyxdd/hysteria?style=flat-square
+[1]: https://img.shields.io/github/license/xocoder/hysteria?style=flat-square
 
 [2]: LICENSE.md
 
-[3]: https://img.shields.io/github/v/release/tobyxdd/hysteria?style=flat-square
+[3]: https://img.shields.io/github/v/release/xocoder/hysteria?style=flat-square
 
-[4]: https://github.com/tobyxdd/hysteria/releases
+[4]: https://github.com/xocoder/hysteria/releases
 
 [5]: https://img.shields.io/badge/chat-Telegram-blue?style=flat-square
 

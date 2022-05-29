@@ -4,9 +4,10 @@
 package tun
 
 import (
-	tun2socks "github.com/eycorsican/go-tun2socks/core"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"net"
+
+	tun2socks "github.com/eycorsican/go-tun2socks/core"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 func (s *Server) Handle(conn net.Conn, target *net.TCPAddr) error {

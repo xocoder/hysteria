@@ -3,17 +3,18 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/tobyxdd/hysteria/pkg/transport"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"net"
 	"net/http"
 	"time"
 
+	"github.com/xocoder/hysteria/pkg/transport"
+	"github.com/xocoder/hysteria/pkg/utils"
+
 	"github.com/elazarl/goproxy/ext/auth"
 
 	"github.com/elazarl/goproxy"
-	"github.com/tobyxdd/hysteria/pkg/acl"
-	"github.com/tobyxdd/hysteria/pkg/core"
+	"github.com/xocoder/hysteria/pkg/acl"
+	"github.com/xocoder/hysteria/pkg/core"
 )
 
 func NewProxyHTTPServer(hyClient *core.Client, transport *transport.ClientTransport, idleTimeout time.Duration,

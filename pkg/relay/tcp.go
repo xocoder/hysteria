@@ -1,10 +1,11 @@
 package relay
 
 import (
-	"github.com/tobyxdd/hysteria/pkg/core"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"net"
 	"time"
+
+	"github.com/xocoder/hysteria/pkg/core"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 type TCPRelay struct {

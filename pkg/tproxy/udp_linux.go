@@ -2,7 +2,7 @@ package tproxy
 
 import (
 	"github.com/LiamHaworth/go-tproxy"
-	"github.com/tobyxdd/hysteria/pkg/core"
+	"github.com/xocoder/hysteria/pkg/core"
 	"net"
 	"time"
 )

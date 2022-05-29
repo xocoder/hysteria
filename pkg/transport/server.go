@@ -3,15 +3,16 @@ package transport
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/lucas-clemente/quic-go"
-	"github.com/tobyxdd/hysteria/pkg/conns/faketcp"
-	"github.com/tobyxdd/hysteria/pkg/conns/udp"
-	"github.com/tobyxdd/hysteria/pkg/conns/wechat"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/lucas-clemente/quic-go"
+	"github.com/xocoder/hysteria/pkg/conns/faketcp"
+	"github.com/xocoder/hysteria/pkg/conns/udp"
+	"github.com/xocoder/hysteria/pkg/conns/wechat"
+	"github.com/xocoder/hysteria/pkg/obfs"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 type ServerTransport struct {

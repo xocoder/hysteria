@@ -5,12 +5,13 @@ package tun
 
 import (
 	"errors"
-	tun2socks "github.com/eycorsican/go-tun2socks/core"
-	"github.com/tobyxdd/hysteria/pkg/core"
 	"net"
 	"strconv"
 	"sync/atomic"
 	"time"
+
+	tun2socks "github.com/eycorsican/go-tun2socks/core"
+	"github.com/xocoder/hysteria/pkg/core"
 )
 
 const udpBufferSize = 65535

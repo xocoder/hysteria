@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"net"
+
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 func setResolver(dns string) {

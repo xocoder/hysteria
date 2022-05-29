@@ -2,11 +2,12 @@ package relay
 
 import (
 	"errors"
-	"github.com/tobyxdd/hysteria/pkg/core"
 	"net"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/xocoder/hysteria/pkg/core"
 )
 
 const udpBufferSize = 65535

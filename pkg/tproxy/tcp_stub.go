@@ -5,9 +5,10 @@ package tproxy
 
 import (
 	"errors"
-	"github.com/tobyxdd/hysteria/pkg/core"
 	"net"
 	"time"
+
+	"github.com/xocoder/hysteria/pkg/core"
 )
 
 type TCPTProxy struct{}

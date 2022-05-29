@@ -4,13 +4,14 @@
 package tun
 
 import (
-	tun2socks "github.com/eycorsican/go-tun2socks/core"
-	"github.com/eycorsican/go-tun2socks/tun"
-	"github.com/tobyxdd/hysteria/pkg/core"
 	"io"
 	"net"
 	"sync"
 	"time"
+
+	tun2socks "github.com/eycorsican/go-tun2socks/core"
+	"github.com/eycorsican/go-tun2socks/tun"
+	"github.com/xocoder/hysteria/pkg/core"
 )
 
 type Server struct {

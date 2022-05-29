@@ -4,17 +4,15 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/tobyxdd/hysteria/pkg/acl"
-	"github.com/tobyxdd/hysteria/pkg/core"
-	"github.com/tobyxdd/hysteria/pkg/transport"
-	"github.com/tobyxdd/hysteria/pkg/utils"
-	"strconv"
-)
-
-import (
-	"github.com/txthinking/socks5"
 	"net"
+	"strconv"
 	"time"
+
+	"github.com/txthinking/socks5"
+	"github.com/xocoder/hysteria/pkg/acl"
+	"github.com/xocoder/hysteria/pkg/core"
+	"github.com/xocoder/hysteria/pkg/transport"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 const udpBufferSize = 65535

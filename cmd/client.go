@@ -13,22 +13,23 @@ import (
 	"time"
 
 	"github.com/oschwald/geoip2-golang"
-	"github.com/tobyxdd/hysteria/pkg/pmtud_fix"
+	"github.com/xocoder/hysteria/pkg/pmtud_fix"
 	"github.com/yosuke-furukawa/json5/encoding/json5"
 
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/congestion"
 	"github.com/sirupsen/logrus"
-	"github.com/tobyxdd/hysteria/pkg/acl"
-	hyCongestion "github.com/tobyxdd/hysteria/pkg/congestion"
-	"github.com/tobyxdd/hysteria/pkg/core"
-	hyHTTP "github.com/tobyxdd/hysteria/pkg/http"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
-	"github.com/tobyxdd/hysteria/pkg/relay"
-	"github.com/tobyxdd/hysteria/pkg/socks5"
-	"github.com/tobyxdd/hysteria/pkg/tproxy"
-	"github.com/tobyxdd/hysteria/pkg/transport"
+	"github.com/xocoder/hysteria/pkg/acl"
+	hyCongestion "github.com/xocoder/hysteria/pkg/congestion"
+	"github.com/xocoder/hysteria/pkg/core"
+	hyHTTP "github.com/xocoder/hysteria/pkg/http"
+	"github.com/xocoder/hysteria/pkg/obfs"
+	"github.com/xocoder/hysteria/pkg/relay"
+	"github.com/xocoder/hysteria/pkg/socks5"
+	"github.com/xocoder/hysteria/pkg/tproxy"
+	"github.com/xocoder/hysteria/pkg/transport"
 	"github.com/xocoder/hysteria/pkg/tun"
+	//"github.com/xocoder/hysteria/pkg/tun"
 )
 
 func client(config *clientConfig) {
@@ -258,18 +259,18 @@ func client(config *clientConfig) {
 			if err != nil {
 				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 				//install tun driver
-				tun,err:=tun.CreateTUN(config.TUN.Timeout,0)
-				if err!=nil {
+				tun, err := tun.CreateTUN(config.TUN.Timeout, 0)
+				if err != nil {
 					logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 				}
-				realInterfaceName,err2:=tun.Name()
-				if err2!=nil{
+				realInterfaceName, err2 := tun.Name()
+				if err2 != nil {
 					logrus.WithField("error", err).Fatal("CreateTun failed")
 				}
-				config.TUN.Name=realInterfaceName
+				config.TUN.Name = realInterfaceName
 				tunServer, err = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
-				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
-				if err!=nil {
+					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
+				if err != nil {
 					logrus.WithField("error", err).Fatal("Failed to initialize TUN server and CreateTUN")
 				}
 			}

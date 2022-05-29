@@ -3,13 +3,14 @@ package transport
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/lucas-clemente/quic-go"
-	"github.com/tobyxdd/hysteria/pkg/conns/faketcp"
-	"github.com/tobyxdd/hysteria/pkg/conns/udp"
-	"github.com/tobyxdd/hysteria/pkg/conns/wechat"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
 	"net"
 	"time"
+
+	"github.com/lucas-clemente/quic-go"
+	"github.com/xocoder/hysteria/pkg/conns/faketcp"
+	"github.com/xocoder/hysteria/pkg/conns/udp"
+	"github.com/xocoder/hysteria/pkg/conns/wechat"
+	"github.com/xocoder/hysteria/pkg/obfs"
 )
 
 type ClientTransport struct {

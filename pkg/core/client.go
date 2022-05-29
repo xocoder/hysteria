@@ -6,18 +6,19 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/lucas-clemente/quic-go"
-	"github.com/lucas-clemente/quic-go/congestion"
-	"github.com/lunixbochs/struc"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
-	"github.com/tobyxdd/hysteria/pkg/pmtud_fix"
-	"github.com/tobyxdd/hysteria/pkg/transport"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"math/rand"
 	"net"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/lucas-clemente/quic-go"
+	"github.com/lucas-clemente/quic-go/congestion"
+	"github.com/lunixbochs/struc"
+	"github.com/xocoder/hysteria/pkg/obfs"
+	"github.com/xocoder/hysteria/pkg/pmtud_fix"
+	"github.com/xocoder/hysteria/pkg/transport"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 var (

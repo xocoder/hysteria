@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"github.com/lucas-clemente/quic-go"
-	"github.com/lunixbochs/struc"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/tobyxdd/hysteria/pkg/acl"
-	"github.com/tobyxdd/hysteria/pkg/transport"
-	"github.com/tobyxdd/hysteria/pkg/utils"
 	"math/rand"
 	"net"
 	"strconv"
 	"sync"
+
+	"github.com/lucas-clemente/quic-go"
+	"github.com/lunixbochs/struc"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/xocoder/hysteria/pkg/acl"
+	"github.com/xocoder/hysteria/pkg/transport"
+	"github.com/xocoder/hysteria/pkg/utils"
 )
 
 const udpBufferSize = 65535

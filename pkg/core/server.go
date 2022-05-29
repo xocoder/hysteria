@@ -5,14 +5,15 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"net"
+
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lunixbochs/struc"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/tobyxdd/hysteria/pkg/acl"
-	"github.com/tobyxdd/hysteria/pkg/obfs"
-	"github.com/tobyxdd/hysteria/pkg/pmtud_fix"
-	"github.com/tobyxdd/hysteria/pkg/transport"
-	"net"
+	"github.com/xocoder/hysteria/pkg/acl"
+	"github.com/xocoder/hysteria/pkg/obfs"
+	"github.com/xocoder/hysteria/pkg/pmtud_fix"
+	"github.com/xocoder/hysteria/pkg/transport"
 )
 
 type ConnectFunc func(addr net.Addr, auth []byte, sSend uint64, sRecv uint64) (bool, string)
