@@ -27,7 +27,7 @@ const (
 )
 
 var (
-	appVersion = "Unknown"
+	appVersion = "1.9"
 	appCommit  = "Unknown"
 	appDate    = "Unknown"
 )
