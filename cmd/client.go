@@ -28,7 +28,7 @@ import (
 	"github.com/tobyxdd/hysteria/pkg/socks5"
 	"github.com/tobyxdd/hysteria/pkg/tproxy"
 	"github.com/tobyxdd/hysteria/pkg/transport"
-	"github.com/tobyxdd/hysteria/pkg/tun"
+	"github.com/xocoder/hysteria/pkg/tun"
 )
 
 func client(config *clientConfig) {
@@ -256,7 +256,22 @@ func client(config *clientConfig) {
 			tunServer, err := tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
-				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+				//install tun driver
+				tun,err:=tun.CreateTUN(config.TUN.Timeout,0)
+				if err!=nil {
+					logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
+				}
+				realInterfaceName,err2:=tun.Name()
+				if err2!=nil{
+					logrus.WithField("error", err).Fatal("CreateTun failed")
+				}
+				config.TUN.Name=realInterfaceName
+				tunServer, err = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
+				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
+				if err!=nil {
+					logrus.WithField("error", err).Fatal("Failed to initialize TUN server and CreateTUN")
+				}
 			}
 			tunServer.RequestFunc = func(addr net.Addr, reqAddr string) {
 				logrus.WithFields(logrus.Fields{
