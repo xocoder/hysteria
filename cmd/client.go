@@ -30,7 +30,7 @@ import (
 	"github.com/xocoder/hysteria/pkg/tproxy"
 	"github.com/xocoder/hysteria/pkg/transport"
 	tun "github.com/xocoder/hysteria/pkg/tun"
-	wintun "golang.zx2c4.com/wireguard/tun"
+	"github.com/xocoder/hysteria/pkg/wintun"
 )
 
 func client(config *clientConfig) {
@@ -261,7 +261,7 @@ func client(config *clientConfig) {
 			if err != nil {
 				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 				//install tun driver
-				go createWinTun(config)
+				go wintun.InstallWinTUN(config.TUN.Name)
 				tunServer, _ = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 
