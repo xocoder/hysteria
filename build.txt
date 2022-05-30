@@ -1,0 +1,3 @@
+xgo -go "1.18" -out "hysteria" -dest "dist" -targets "windows-6.0/amd64" -image "crazymax/xgo:latest" -ldflags "-w -s" ./cmd
+
+
