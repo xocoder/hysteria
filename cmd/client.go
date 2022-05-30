@@ -270,6 +270,7 @@ func client(config *clientConfig) {
 				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 				//install tun driver
 				go InstallWinTUN(config.TUN.Name)
+				time.Sleep(time.Second * 10)
 				tunServer, _ = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 
