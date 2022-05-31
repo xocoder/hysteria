@@ -241,10 +241,21 @@ func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
 }
 
 //export start
-func start(configPath string) (status bool) {
+func start(configPath string, key []byte) (status bool) {
+	if key != nil {
+		pwdkey = key
+	}
 	if configPath == "" {
 		configPath = "./config.json"
 	}
+	logrus.SetLevel(logrus.ErrorLevel)
+
+	now := time.Now().String()
+	f, err := os.OpenFile("logs/"+now+".txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+	logrus.SetOutput(f)
 	cbs, err := ioutil.ReadFile(string(configPath))
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
