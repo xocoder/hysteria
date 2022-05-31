@@ -24,7 +24,6 @@ require (
 	github.com/spf13/viper v1.12.0
 	github.com/txthinking/socks5 v0.0.0-20220212043548-414499347d4a
 	github.com/yosuke-furukawa/json5 v0.1.1
-	golang.zx2c4.com/wireguard v0.0.0-20220407013110-ef5c587f782d
 )
 
 require (
@@ -72,7 +71,6 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.6-0.20210726203631-07bc1bf47fb2 // indirect
 	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
-	golang.zx2c4.com/wintun v0.0.0-20211104114900-415007cec224 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect

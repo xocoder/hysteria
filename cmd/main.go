@@ -33,9 +33,9 @@ var (
 
 var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
 var rootCmd = &cobra.Command{
-	Use:     "hysteria",
+	Use:     "Mars",
 	Long:    fmt.Sprintf("%s%s\n\nVersion:\t%s\nBuildDate:\t%s\nCommitHash:\t%s\nAuthors:\t%s", logo, desc, appVersion, appDate, appCommit, authors),
-	Example: "./hysteria server --config /etc/hysteria.json",
+	Example: "",
 	Version: fmt.Sprintf("%s %s %s", appVersion, appDate, appCommit),
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		rand.Seed(time.Now().UnixNano())
@@ -66,9 +66,9 @@ var rootCmd = &cobra.Command{
 		}
 
 		// check update
-		if !viper.GetBool("no-check") {
-			go checkUpdate()
-		}
+		//if !viper.GetBool("no-check") {
+		//go checkUpdate()
+		//}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		clientCmd.Run(cmd, args)
@@ -76,9 +76,9 @@ var rootCmd = &cobra.Command{
 }
 
 var clientCmd = &cobra.Command{
-	Use:     "client",
-	Short:   "Run as client mode",
-	Example: "./mars client --config /opt/client.json",
+	Use:     "",
+	Short:   "",
+	Example: "",
 	Run: func(cmd *cobra.Command, args []string) {
 		cbs, err := ioutil.ReadFile(viper.GetString("config"))
 		if err != nil {
@@ -109,9 +109,9 @@ var clientCmd = &cobra.Command{
 }
 
 var serverCmd = &cobra.Command{
-	Use:     "server",
-	Short:   "Run as server mode",
-	Example: "./hysteria server --config /etc/hysteria/server.json",
+	Use:     "",
+	Short:   "",
+	Example: "",
 	Run: func(cmd *cobra.Command, args []string) {
 		cbs, err := ioutil.ReadFile(viper.GetString("config"))
 		if err != nil {
@@ -159,10 +159,12 @@ func init() {
 
 	// add global flags
 	rootCmd.PersistentFlags().StringP("config", "c", "./config.json", "config file")
-	/*rootCmd.PersistentFlags().String("mmdb-url", "https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb", "mmdb download url")
-	rootCmd.PersistentFlags().String("log-level", "debug", "log level")
-	rootCmd.PersistentFlags().String("log-timestamp", time.RFC3339, "log timestamp format")
+	rootCmd.PersistentFlags().String("log-level", "error", "log level")
 	rootCmd.PersistentFlags().String("log-format", "txt", "log output format(txt/json)")
+
+	/*rootCmd.PersistentFlags().String("mmdb-url", "https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb", "mmdb download url")
+
+	rootCmd.PersistentFlags().String("log-timestamp", time.RFC3339, "log timestamp format")
 	rootCmd.PersistentFlags().Bool("no-check", false, "disable update check")*/
 
 	// add to root cmd
@@ -170,18 +172,20 @@ func init() {
 
 	// bind flag
 	_ = viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
-	/*_ = viper.BindPFlag("mmdb-url", rootCmd.PersistentFlags().Lookup("mmdb-url"))
 	_ = viper.BindPFlag("log-level", rootCmd.PersistentFlags().Lookup("log-level"))
-	_ = viper.BindPFlag("log-timestamp", rootCmd.PersistentFlags().Lookup("log-timestamp"))
 	_ = viper.BindPFlag("log-format", rootCmd.PersistentFlags().Lookup("log-format"))
+
+	/*_ = viper.BindPFlag("mmdb-url", rootCmd.PersistentFlags().Lookup("mmdb-url"))
+	_ = viper.BindPFlag("log-timestamp", rootCmd.PersistentFlags().Lookup("log-timestamp"))
 	_ = viper.BindPFlag("no-check", rootCmd.PersistentFlags().Lookup("no-check"))*/
 
 	// bind env
 	_ = viper.BindEnv("config", "HYSTERIA_CONFIG")
-	/*_ = viper.BindEnv("mmdb-url", "HYSTERIA_MMDB_URL")
 	_ = viper.BindEnv("log-level", "HYSTERIA_LOG_LEVEL", "LOGGING_LEVEL")
-	_ = viper.BindEnv("log-timestamp", "HYSTERIA_LOG_TIMESTAMP", "LOGGING_TIMESTAMP_FORMAT")
 	_ = viper.BindEnv("log-format", "HYSTERIA_LOG_FORMAT", "LOGGING_FORMATTER")
+
+	/*_ = viper.BindEnv("mmdb-url", "HYSTERIA_MMDB_URL")
+	_ = viper.BindEnv("log-timestamp", "HYSTERIA_LOG_TIMESTAMP", "LOGGING_TIMESTAMP_FORMAT")
 	_ = viper.BindEnv("no-check", "HYSTERIA_NO_CHECK", "HYSTERIA_NO_CHECK_UPDATE")*/
 	viper.AutomaticEnv()
 }
