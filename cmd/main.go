@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -19,14 +20,9 @@ import (
 )
 
 const (
-	logo = `
-░█░█░█░█░█▀▀░▀█▀░█▀▀░█▀▄░▀█▀░█▀█
-░█▀█░░█░░▀▀█░░█░░█▀▀░█▀▄░░█░░█▀█
-░▀░▀░░▀░░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀░▀░▀
-
-`
+	logo    = `Mars Proxy`
 	desc    = "A TCP/UDP relay & SOCKS5/HTTP proxy tool optimized for poor network environments"
-	authors = "HyNetwork <https://github.com/HyNetwork>"
+	authors = "Mars"
 )
 
 var (
@@ -35,7 +31,7 @@ var (
 	appDate    = "Unknown"
 )
 
-//var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
+var pwdkey = []byte("c0b6120d44a43fbf6ecbc1f3d094f39e")
 var rootCmd = &cobra.Command{
 	Use:     "hysteria",
 	Long:    fmt.Sprintf("%s%s\n\nVersion:\t%s\nBuildDate:\t%s\nCommitHash:\t%s\nAuthors:\t%s", logo, desc, appVersion, appDate, appCommit, authors),
@@ -82,7 +78,7 @@ var rootCmd = &cobra.Command{
 var clientCmd = &cobra.Command{
 	Use:     "client",
 	Short:   "Run as client mode",
-	Example: "./hysteria client --config /etc/hysteria/client.json",
+	Example: "./mars client --config /opt/client.json",
 	Run: func(cmd *cobra.Command, args []string) {
 		cbs, err := ioutil.ReadFile(viper.GetString("config"))
 		if err != nil {
@@ -91,15 +87,15 @@ var clientCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
-		/*/解密config
-		cbs, err = AesDecrypt(cbs, pwdkey)
+		//解密config
+		cbs, err = DecryptAes(string(cbs), pwdkey)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"file":  viper.GetString("config"),
 				"error": err,
-			}).Fatal("[decrypt]Failed to parse client configuration")
+			}).Fatal("[decrypt]Failed to parse client configuration:%v", string(cbs))
 		}
-		*/
+
 		// client mode
 		cc, err := parseClientConfig(cbs)
 		if err != nil {
@@ -163,30 +159,30 @@ func init() {
 
 	// add global flags
 	rootCmd.PersistentFlags().StringP("config", "c", "./config.json", "config file")
-	rootCmd.PersistentFlags().String("mmdb-url", "https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb", "mmdb download url")
+	/*rootCmd.PersistentFlags().String("mmdb-url", "https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb", "mmdb download url")
 	rootCmd.PersistentFlags().String("log-level", "debug", "log level")
 	rootCmd.PersistentFlags().String("log-timestamp", time.RFC3339, "log timestamp format")
 	rootCmd.PersistentFlags().String("log-format", "txt", "log output format(txt/json)")
-	rootCmd.PersistentFlags().Bool("no-check", false, "disable update check")
+	rootCmd.PersistentFlags().Bool("no-check", false, "disable update check")*/
 
 	// add to root cmd
 	rootCmd.AddCommand(clientCmd, serverCmd, completionCmd)
 
 	// bind flag
 	_ = viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
-	_ = viper.BindPFlag("mmdb-url", rootCmd.PersistentFlags().Lookup("mmdb-url"))
+	/*_ = viper.BindPFlag("mmdb-url", rootCmd.PersistentFlags().Lookup("mmdb-url"))
 	_ = viper.BindPFlag("log-level", rootCmd.PersistentFlags().Lookup("log-level"))
 	_ = viper.BindPFlag("log-timestamp", rootCmd.PersistentFlags().Lookup("log-timestamp"))
 	_ = viper.BindPFlag("log-format", rootCmd.PersistentFlags().Lookup("log-format"))
-	_ = viper.BindPFlag("no-check", rootCmd.PersistentFlags().Lookup("no-check"))
+	_ = viper.BindPFlag("no-check", rootCmd.PersistentFlags().Lookup("no-check"))*/
 
 	// bind env
 	_ = viper.BindEnv("config", "HYSTERIA_CONFIG")
-	_ = viper.BindEnv("mmdb-url", "HYSTERIA_MMDB_URL")
+	/*_ = viper.BindEnv("mmdb-url", "HYSTERIA_MMDB_URL")
 	_ = viper.BindEnv("log-level", "HYSTERIA_LOG_LEVEL", "LOGGING_LEVEL")
 	_ = viper.BindEnv("log-timestamp", "HYSTERIA_LOG_TIMESTAMP", "LOGGING_TIMESTAMP_FORMAT")
 	_ = viper.BindEnv("log-format", "HYSTERIA_LOG_FORMAT", "LOGGING_FORMATTER")
-	_ = viper.BindEnv("no-check", "HYSTERIA_NO_CHECK", "HYSTERIA_NO_CHECK_UPDATE")
+	_ = viper.BindEnv("no-check", "HYSTERIA_NO_CHECK", "HYSTERIA_NO_CHECK_UPDATE")*/
 	viper.AutomaticEnv()
 }
 
@@ -205,7 +201,7 @@ func pkcs7UnPadding(data []byte) ([]byte, error) {
 	return data[:(length - unPadding)], nil
 }
 
-func AesDecrypt(data []byte, key []byte) ([]byte, error) {
+func aesDecrypt(data []byte, key []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -219,4 +215,12 @@ func AesDecrypt(data []byte, key []byte) ([]byte, error) {
 		return nil, err
 	}
 	return crypted, nil
+}
+
+func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
+	dataByte, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return nil, err
+	}
+	return aesDecrypt(dataByte, pwdkey)
 }

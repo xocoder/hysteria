@@ -4,15 +4,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/oschwald/geoip2-golang"
@@ -33,12 +30,6 @@ import (
 	"github.com/xocoder/hysteria/pkg/tproxy"
 	"github.com/xocoder/hysteria/pkg/transport"
 	tun "github.com/xocoder/hysteria/pkg/tun"
-
-	"golang.zx2c4.com/wireguard/conn"
-	"golang.zx2c4.com/wireguard/device"
-	"golang.zx2c4.com/wireguard/ipc"
-
-	wintun "golang.zx2c4.com/wireguard/tun"
 )
 
 func client(config *clientConfig) {
@@ -267,13 +258,7 @@ func client(config *clientConfig) {
 			tunServer, err := tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
-				//logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
-				//install tun driver
-				go InstallWinTUN(config.TUN.Name)
-				time.Sleep(time.Second * 10)
-				tunServer, _ = tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
-					config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
-
+				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
 			}
 			tunServer.RequestFunc = func(addr net.Addr, reqAddr string) {
 				logrus.WithFields(logrus.Fields{
@@ -464,59 +449,4 @@ func parseClientConfig(cb []byte) (*clientConfig, error) {
 		return nil, err
 	}
 	return &c, c.Check()
-}
-
-const (
-	ExitSetupSuccess = 0
-	ExitSetupFailed  = 1
-)
-
-func InstallWinTUN(interfaceName string) (newinterfaceName string, result bool) {
-	logger := device.NewLogger(
-		device.LogLevelVerbose,
-		fmt.Sprint("(%s) ", interfaceName),
-	)
-	tun, err := wintun.CreateTUN(interfaceName, 0)
-	if err != nil {
-		logger.Errorf("Failed to create TUN device:%v", err)
-		return interfaceName, false
-	}
-	realInterfaceName, err2 := tun.Name()
-	if err2 == nil {
-		newinterfaceName = realInterfaceName
-	}
-	device := device.NewDevice(tun, conn.NewDefaultBind(), logger)
-	err = device.Up()
-	if err != nil {
-		logger.Errorf("failed to bring up device:%v", err)
-		return newinterfaceName, false
-	}
-	uapi, err := ipc.UAPIListen(newinterfaceName)
-	if err != nil {
-		logger.Errorf("failed to listen on uapi socket:%v", err)
-		return newinterfaceName, false
-	}
-	errs := make(chan error)
-	term := make(chan os.Signal, 1)
-
-	go func() {
-		for {
-			conn, err := uapi.Accept()
-			if err != nil {
-				errs <- err
-				return
-			}
-			go device.IpcHandle(conn)
-		}
-	}()
-	logger.Verbosef("UAPI listener started")
-	signal.Notify(term, os.Interrupt)
-	signal.Notify(term, os.Kill)
-	signal.Notify(term, syscall.SIGTERM)
-	select {
-	case <-term:
-	case <-errs:
-	case <-device.Wait():
-	}
-	return newinterfaceName, true
 }
