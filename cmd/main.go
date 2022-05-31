@@ -116,7 +116,7 @@ var clientCmd = &cobra.Command{
 		client(cc)
 	},
 }
-
+/*
 var serverCmd = &cobra.Command{
 	Use:     "server",
 	Short:   "",
@@ -141,7 +141,7 @@ var serverCmd = &cobra.Command{
 		server(sc)
 	},
 }
-
+*/
 // fakeFlags replace the old flag format with the new format(eg: `-config` ->> `--config`)
 func fakeFlags() {
 	var args []string
