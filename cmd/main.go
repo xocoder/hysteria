@@ -76,17 +76,26 @@ var rootCmd = &cobra.Command{
 }
 
 var clientCmd = &cobra.Command{
-	Use:     "",
+	Use:     "client",
 	Short:   "",
 	Example: "",
 	Run: func(cmd *cobra.Command, args []string) {
-		cbs, err := ioutil.ReadFile(viper.GetString("config"))
+		path := viper.GetString("config")
+		configPath, err := DecryptAes(path, pwdkey)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"file":  viper.GetString("config"),
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
+		cbs, err := ioutil.ReadFile(string(configPath))
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"file":  viper.GetString("config"),
+				"error": err,
+			}).Fatal("Failed to read configuration")
+		}
+
 		//解密config
 		cbs, err = DecryptAes(string(cbs), pwdkey)
 		if err != nil {
@@ -109,7 +118,7 @@ var clientCmd = &cobra.Command{
 }
 
 var serverCmd = &cobra.Command{
-	Use:     "",
+	Use:     "server",
 	Short:   "",
 	Example: "",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -152,7 +161,7 @@ func init() {
 	fakeFlags()
 
 	// compatible windows double click
-	cobra.MousetrapHelpText = ""
+	cobra.MousetrapHelpText = "pp"
 
 	// disable cmd sorting
 	cobra.EnableCommandSorting = false
@@ -168,7 +177,7 @@ func init() {
 	rootCmd.PersistentFlags().Bool("no-check", false, "disable update check")*/
 
 	// add to root cmd
-	rootCmd.AddCommand(clientCmd, serverCmd, completionCmd)
+	//rootCmd.AddCommand(clientCmd, serverCmd, completionCmd)
 
 	// bind flag
 	_ = viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))

@@ -1,12 +1,11 @@
 package main
 
-import (
-	"fmt"
-	"os"
+//"fmt"
+//"os"
 
-	"github.com/spf13/cobra"
-)
+//"github.com/spf13/cobra"
 
+/*
 var completionCmd = &cobra.Command{
 	Use:   "completion [bash|zsh|fish|powershell]",
 	Short: "Generate completion script",
@@ -64,4 +63,4 @@ PowerShell:
 			_ = cmd.Root().GenPowerShellCompletionWithDesc(os.Stdout)
 		}
 	},
-}
+}*/
