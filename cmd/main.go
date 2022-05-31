@@ -1,6 +1,7 @@
 package main
 
 import (
+	"C"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
@@ -116,6 +117,7 @@ var clientCmd = &cobra.Command{
 		client(cc)
 	},
 }
+
 /*
 var serverCmd = &cobra.Command{
 	Use:     "server",
@@ -236,4 +238,38 @@ func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
 		return nil, err
 	}
 	return aesDecrypt(dataByte, pwdkey)
+}
+
+//export start
+func start(configPath string) (status bool) {
+	if configPath == "" {
+		configPath = "./config.json"
+	}
+	cbs, err := ioutil.ReadFile(string(configPath))
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"file":  viper.GetString("config"),
+			"error": err,
+		}).Fatal("Failed to read configuration")
+	}
+
+	//解密config
+	cbs, err = DecryptAes(string(cbs), pwdkey)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"file":  viper.GetString("config"),
+			"error": err,
+		}).Fatal("[decrypt]Failed to parse client configuration:%v", string(cbs))
+	}
+
+	// client mode
+	cc, err := parseClientConfig(cbs)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"file":  viper.GetString("config"),
+			"error": err,
+		}).Fatal("Failed to parse client configuration")
+	}
+	client(cc)
+	return true
 }
