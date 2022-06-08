@@ -233,7 +233,8 @@ func aesDecrypt(data []byte, key []byte) ([]byte, error) {
 }
 
 func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
-	dataByte, err := base64.StdEncoding.DecodeString(data)
+//	dataByte, err := base64.StdEncoding.DecodeString(data)
+	dataByte, err := base64.RawURLEncoding.DecodeString(data)
 	if err != nil {
 		return nil, err
 	}
