@@ -89,7 +89,7 @@ var clientCmd = &cobra.Command{
 				"error": err,
 			}).Fatal("Failed to read configuration")
 		}
-
+		println(string(cbs))
 		//解密config
 		cbs, err = DecryptAes(string(cbs), pwdkey)
 		if err != nil {
