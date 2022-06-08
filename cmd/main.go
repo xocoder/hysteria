@@ -241,10 +241,7 @@ func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
 }
 
 //export start
-func start(configPath string, key []byte) (status bool) {
-	if key != nil {
-		pwdkey = key
-	}
+func start(configPath string) (status bool) {
 	if configPath == "" {
 		configPath = "./config.json"
 	}
