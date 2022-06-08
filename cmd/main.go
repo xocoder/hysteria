@@ -19,6 +19,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+import "io"
 
 const (
 	logo    = `Mars Proxy`
@@ -240,7 +241,14 @@ func start(configPath string) (status bool) {
 		configPath = "./config.json"
 	}
 	logrus.SetLevel(logrus.ErrorLevel)
-
+	logrus.SetOutput(os.Stdout)
+	file, err := os.OpenFile("log.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	writes := []io.Writer{
+		file}
+	fileAndstdoutwrite := io.MultiWriter(writes...)
+	if err == nil {
+		logrus.SetOutput(fileAndstdoutwrite)
+	}
 	cbs, err := ioutil.ReadFile(string(configPath))
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
