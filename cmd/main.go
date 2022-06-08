@@ -96,7 +96,7 @@ var clientCmd = &cobra.Command{
 			logrus.WithFields(logrus.Fields{
 				"file":  viper.GetString("config"),
 				"error": err,
-			}).Fatal("[decrypt]Failed to parse client configuration:%v", string(cbs))
+			}).Fatal("[decrypt]Failed to parse client configuration:" + string(cbs))
 		}
 
 		// client mode
