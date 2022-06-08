@@ -82,14 +82,7 @@ var clientCmd = &cobra.Command{
 	Example: "",
 	Run: func(cmd *cobra.Command, args []string) {
 		path := viper.GetString("config")
-		configPath, err := DecryptAes(path, pwdkey)
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"file":  viper.GetString("config"),
-				"error": err,
-			}).Fatal("Failed to read configuration")
-		}
-		cbs, err := ioutil.ReadFile(string(configPath))
+		cbs, err := ioutil.ReadFile(string(path))
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
 				"file":  viper.GetString("config"),
@@ -233,7 +226,7 @@ func aesDecrypt(data []byte, key []byte) ([]byte, error) {
 }
 
 func DecryptAes(data string, pwdkey []byte) ([]byte, error) {
-//	dataByte, err := base64.StdEncoding.DecodeString(data)
+	//	dataByte, err := base64.StdEncoding.DecodeString(data)
 	dataByte, err := base64.RawURLEncoding.DecodeString(data)
 	if err != nil {
 		return nil, err
