@@ -33,6 +33,7 @@ import (
 )
 
 var client_a *core.Client
+var tunServer *tun.Server
 
 func client(config *clientConfig) {
 	logrus.WithField("config", config.String()).Info("Client configuration loaded")
@@ -257,7 +258,8 @@ func client(config *clientConfig) {
 				timeout = 300 * time.Second
 			}
 
-			tunServer, err := tun.NewServer(client_a, time.Duration(config.TUN.Timeout)*time.Second,
+			var err error
+			tunServer, err = tun.NewServer(client_a, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
 				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")

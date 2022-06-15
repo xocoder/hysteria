@@ -271,5 +271,6 @@ func start(configPath string) (status bool) {
 
 //export stop
 func stop() {
+	tunServer.TunDev.Close()
 	client_a.Close()
 }
