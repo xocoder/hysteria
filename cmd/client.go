@@ -32,6 +32,8 @@ import (
 	tun "github.com/xocoder/hysteria/pkg/tun"
 )
 
+var client_a *core.Client
+
 func client(config *clientConfig) {
 	logrus.WithField("config", config.String()).Info("Client configuration loaded")
 	// Resolver
@@ -131,7 +133,7 @@ func client(config *clientConfig) {
 		}
 	}
 	// Client
-	var client *core.Client
+	//var client *core.Client
 	try := 0
 	up, down, _ := config.Speed()
 	for {
@@ -153,11 +155,11 @@ func client(config *clientConfig) {
 				logrus.Fatal("Out of retries, exiting...")
 			}
 		} else {
-			client = c
+			client_a = c
 			break
 		}
 	}
-	defer client.Close()
+	defer client_a.Close()
 	logrus.WithField("addr", config.Server).Info("Connected")
 
 	// Local
@@ -170,7 +172,7 @@ func client(config *clientConfig) {
 					return config.SOCKS5.User == user && config.SOCKS5.Password == password
 				}
 			}
-			socks5server, err := socks5.NewServer(client, transport.DefaultClientTransport, config.SOCKS5.Listen,
+			socks5server, err := socks5.NewServer(client_a, transport.DefaultClientTransport, config.SOCKS5.Listen,
 				authFunc, time.Duration(config.SOCKS5.Timeout)*time.Second, aclEngine, config.SOCKS5.DisableUDP,
 				func(addr net.Addr, reqAddr string, action acl.Action, arg string) {
 					logrus.WithFields(logrus.Fields{
@@ -226,7 +228,7 @@ func client(config *clientConfig) {
 					return config.HTTP.User == user && config.HTTP.Password == password
 				}
 			}
-			proxy, err := hyHTTP.NewProxyHTTPServer(client, transport.DefaultClientTransport,
+			proxy, err := hyHTTP.NewProxyHTTPServer(client_a, transport.DefaultClientTransport,
 				time.Duration(config.HTTP.Timeout)*time.Second, aclEngine,
 				func(reqAddr string, action acl.Action, arg string) {
 					logrus.WithFields(logrus.Fields{
@@ -255,7 +257,7 @@ func client(config *clientConfig) {
 				timeout = 300 * time.Second
 			}
 
-			tunServer, err := tun.NewServer(client, time.Duration(config.TUN.Timeout)*time.Second,
+			tunServer, err := tun.NewServer(client_a, time.Duration(config.TUN.Timeout)*time.Second,
 				config.TUN.Name, config.TUN.Address, config.TUN.Gateway, config.TUN.Mask, config.TUN.DNS, config.TUN.Persist)
 			if err != nil {
 				logrus.WithField("error", err).Fatal("Failed to initialize TUN server")
@@ -307,7 +309,7 @@ func client(config *clientConfig) {
 	if len(config.TCPRelays) > 0 {
 		for _, tcpr := range config.TCPRelays {
 			go func(tcpr Relay) {
-				rl, err := relay.NewTCPRelay(client, tcpr.Listen, tcpr.Remote,
+				rl, err := relay.NewTCPRelay(client_a, tcpr.Listen, tcpr.Remote,
 					time.Duration(tcpr.Timeout)*time.Second,
 					func(addr net.Addr) {
 						logrus.WithFields(logrus.Fields{
@@ -346,7 +348,7 @@ func client(config *clientConfig) {
 	if len(config.UDPRelays) > 0 {
 		for _, udpr := range config.UDPRelays {
 			go func(udpr Relay) {
-				rl, err := relay.NewUDPRelay(client, udpr.Listen, udpr.Remote,
+				rl, err := relay.NewUDPRelay(client_a, udpr.Listen, udpr.Remote,
 					time.Duration(udpr.Timeout)*time.Second,
 					func(addr net.Addr) {
 						logrus.WithFields(logrus.Fields{
@@ -376,7 +378,7 @@ func client(config *clientConfig) {
 
 	if len(config.TCPTProxy.Listen) > 0 {
 		go func() {
-			rl, err := tproxy.NewTCPTProxy(client, config.TCPTProxy.Listen,
+			rl, err := tproxy.NewTCPTProxy(client_a, config.TCPTProxy.Listen,
 				time.Duration(config.TCPTProxy.Timeout)*time.Second,
 				func(addr, reqAddr net.Addr) {
 					logrus.WithFields(logrus.Fields{
@@ -408,7 +410,7 @@ func client(config *clientConfig) {
 
 	if len(config.UDPTProxy.Listen) > 0 {
 		go func() {
-			rl, err := tproxy.NewUDPTProxy(client, config.UDPTProxy.Listen,
+			rl, err := tproxy.NewUDPTProxy(client_a, config.UDPTProxy.Listen,
 				time.Duration(config.UDPTProxy.Timeout)*time.Second,
 				func(addr, reqAddr net.Addr) {
 					logrus.WithFields(logrus.Fields{
